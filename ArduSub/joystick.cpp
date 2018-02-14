@@ -15,6 +15,7 @@ int16_t zTrim = 0;
 int16_t xTrim = 0;
 int16_t yTrim = 0;
 int16_t video_switch = 1100;
+int16_t strobe_switch = 1100;
 int16_t x_last, y_last, z_last;
 uint16_t buttons_prev;
 
@@ -113,6 +114,7 @@ void Sub::transform_manual_control_to_rc_override(int16_t x, int16_t y, int16_t 
     RC_Channels::set_override(8, lights1);       // lights 1
     RC_Channels::set_override(9, lights2);       // lights 2
     RC_Channels::set_override(10, video_switch); // video switch
+    RC_Channels::set_override(11, strobe_switch); // strobe switch
 
     // Store old x, y, z values for use in input hold logic
     x_last = x;
@@ -545,6 +547,10 @@ void Sub::handle_jsbutton_press(uint8_t button, bool shift, bool held)
         }
         break;
 
+    case JSButton::button_function_t::k_strobe_light:
+        strobe_switch = strobe_switch < 1500 ? 1900 : 1100;
+        break;
+
     case JSButton::button_function_t::k_custom_1:
         // Not implemented
         break;
@@ -668,7 +674,7 @@ void Sub::default_js_buttons()
         {JSButton::button_function_t::k_gain_dec,               JSButton::button_function_t::k_trim_pitch_inc},
         {JSButton::button_function_t::k_lights1_dimmer,         JSButton::button_function_t::k_trim_roll_dec},
         {JSButton::button_function_t::k_lights1_brighter,       JSButton::button_function_t::k_trim_roll_inc},
-        {JSButton::button_function_t::k_none,                   JSButton::button_function_t::k_none},
+        {JSButton::button_function_t::k_strobe_light,           JSButton::button_function_t::k_none},
     };
 
     for (int i = 0; i < 16; i++) {
